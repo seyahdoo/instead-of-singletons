@@ -7,24 +7,48 @@ public class ColorSettingUI : MonoBehaviour {
     public Slider gSlider;
     public Slider bSlider;
     public Slider aSlider;
-    private Color _color;
-    private Color _oldColor;
-    private void Awake() {
-        _color = god.settingsManager.GetColor();
-        _oldColor = _color;
-        rSlider.value = _color.r;
-        gSlider.value = _color.g;
-        bSlider.value = _color.b;
-        aSlider.value = _color.a;
+    public Toggle overrideToggle;
+    
+    private void OnEnable() {
+        var color = god.settingsManager.GetColor();
+        rSlider.onValueChanged.AddListener(OnSliderValueChanged);
+        gSlider.onValueChanged.AddListener(OnSliderValueChanged);
+        bSlider.onValueChanged.AddListener(OnSliderValueChanged);
+        aSlider.onValueChanged.AddListener(OnSliderValueChanged);
+        rSlider.value = color.r;
+        gSlider.value = color.g;
+        bSlider.value = color.b;
+        aSlider.value = color.a;
+        
+        var willOverride = god.settingsManager.GetWillColorOverride();
+        overrideToggle.onValueChanged.AddListener(OnToggleValueChanged);
+        overrideToggle.isOn = willOverride;
     }
-    private void Update() {
-        _color.r = rSlider.value;
-        _color.g = gSlider.value;
-        _color.b = bSlider.value;
-        _color.a = aSlider.value;
-        if (_oldColor != _color) {
-            _oldColor = _color;
-            god.settingsManager.SetColor(_color);
+    private void OnDisable() {
+        rSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
+        gSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
+        bSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
+        aSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
+        overrideToggle.onValueChanged.RemoveListener(OnToggleValueChanged);
+    }
+    private void OnToggleValueChanged(bool willOverride) {
+        var color = new Color(
+            rSlider.value,
+            gSlider.value,
+            bSlider.value,
+            aSlider.value
+        );
+        god.settingsManager.SetColorWillOverride(willOverride, color);
+    }
+    private void OnSliderValueChanged(float newSliderValue) {
+        if (overrideToggle.isOn) {
+            var color = new Color(
+                rSlider.value,
+                gSlider.value,
+                bSlider.value,
+                aSlider.value
+            );
+            god.settingsManager.SetOverrideColor(color);
         }
     }
 }

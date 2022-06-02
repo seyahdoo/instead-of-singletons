@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ed5619c5f3624843983f9ae356732b5, type: 3}
   m_Name: SetingsManager
   m_EditorClassIdentifier: 
-  defaultColor: {r: 0.24417053, g: 0.4043511, b: 0.8773585, a: 0}
+  defaultColor: {r: 0.6159809, g: 0.35590956, b: 0.8113208, a: 0}
